@@ -1,101 +1,140 @@
-import Image from "next/image";
+// app/pages/index.tsx
 
-export default function Home() {
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CheckCircle } from "lucide-react";
+import Link from "next/link";
+
+// Data for the page
+const pageData = {
+  consultation: {
+    title: "shinpi me カウンセリング",
+    description:
+        "shinpi me カウンセリング～内なる神秘を探し、本来の自分に還る",
+    plans: [
+      {
+        name: "ベーシックコース：「内なる静寂を見つける」",
+        price: "¥5,000 / セッション",
+        description: "1対1のオンラインセッション（30分）",
+        points: [
+          "はじめてカウンセリングを受ける人、忙しい日常の中で手軽に心を整えたい人。",
+          "短時間で自分を見つめ直すためのシンプルなセッション。",
+          "主にカウンセリング中心で、日常生活に取り入れやすいアドバイスを提供。",
+        ],
+      },
+      {
+        name: "ディープダイブコース：「心の神秘と向き合う」",
+        price: "¥10,000 / セッション",
+        description: "1対1のオンラインまたは対面セッション（60分）",
+        points: [
+          "深い内省と心の奥にある問題の根本原因にアプローチするセッション。",
+          "東洋思想やスピリチュアルの視点を取り入れながら、実践的なワークも行う。",
+          "主なテーマ例：人生の目的探し、感情の解放、自己成長のプロセス。",
+          "セッション後にメールフォローアップ（アドバイスや質問回答付き）。",
+        ],
+      },
+      {
+        name: "トランスフォーメーションコース：「本来の自分に還る」",
+        price: "¥50,000 / 月",
+        description: "月額制プラン（週1回60分×4回のセッション + 無制限メールサポート）",
+        points: [
+          "人生の大きな転換期にいる人、深い変容を求めている人、東洋思想に基づく指導をじっくり学びたい人。",
+          "継続的なサポートを提供し、大きな人生の変革を目指すコース。",
+          "月3～4回のセッションを通じて、包括的な自己変革プランを作成し、実践をサポート。",
+          "主なテーマ例：長期的な目標達成、東洋思想を生かした生き方の指導、無や空の哲学の応用。",
+          "人生の大きな転換期にいる人、深い変容を求めている人、東洋思想に基づく指導をじっくり学びたい人。",
+        ],
+      },
+    ],
+  },
+  books: {
+    title: "Books on Spirituality",
+    description:
+        "Discover profound insights through our carefully curated spiritual books. Embark on a journey of growth and enlightenment.",
+    link: "/books",
+  },
+  products: {
+    title: "Spiritual Products",
+    description:
+        "Enhance your spiritual practices with our exclusive products designed to complement your journey.",
+    link: "/products",
+  },
+};
+
+export default function HomePage() {
   return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+      <main className="container mx-auto px-4 py-8 space-y-12">
+        {/* Consultation Section */}
+        <section className="text-center space-y-4">
+          <h1 className="text-4xl font-bold text-gray-800 text-left">
+            {pageData.consultation.title}
+          </h1>
+          <p className="text-lg text-gray-600 text-left">
+            {pageData.consultation.description}
+          </p>
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
+          <div className="grid md:grid-cols-3 gap-6">
+            {pageData.consultation.plans.map((plan, index) => (
+                <Card key={index} className="shadow-md h-full flex flex-col justify-between">
+                  <CardHeader>
+                    <CardTitle className="text-2xl font-semibold text-left">
+                      {plan.name}
+                    </CardTitle>
+                    <CardDescription className="text-xl text-gray-500 text-left">
+                      {plan.price}
+                    </CardDescription>
+                  </CardHeader>
+                  <CardContent className="flex flex-col h-full">
+                    <p className="text-gray-700 mb-4 text-left">{plan.description}</p>
+                    <ul className="space-y-2 mb-auto">
+                      {plan.points.map((point, idx) => (
+                          <li key={idx} className="flex items-center space-x-3 text-left">
+                            {/* Consistent icon size across all points */}
+                            <CheckCircle className="text-green-500 w-10 h-10" /> {/* Same size for all icons */}
+                            <span className="text-gray-600">{point}</span>
+                          </li>
+                      ))}
+                    </ul>
+                    <div className="mt-6">
+                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                        予約
+                      </Button>
+                    </div>
+                  </CardContent>
+                </Card>
+            ))}
+          </div>
+        </section>
+
+        {/* Books Section */}
+        <section className="flex flex-col md:flex-row items-center justify-between bg-blue-50 rounded-lg p-6">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-semibold text-gray-800 text-left">
+              {pageData.books.title}
+            </h2>
+            <p className="text-gray-600 text-left">{pageData.books.description}</p>
+          </div>
+          <Link href={pageData.books.link}>
+            <Button className="bg-blue-600 hover:bg-blue-700 mt-4 md:mt-0">
+              Explore Books
+            </Button>
+          </Link>
+        </section>
+
+        {/* Products Section */}
+        <section className="flex flex-col md:flex-row items-center justify-between bg-blue-50 rounded-lg p-6">
+          <div className="space-y-2">
+            <h2 className="text-3xl font-semibold text-gray-800 text-left">
+              {pageData.products.title}
+            </h2>
+            <p className="text-gray-600 text-left">{pageData.products.description}</p>
+          </div>
+          <Link href={pageData.products.link}>
+            <Button className="bg-blue-600 hover:bg-blue-700 mt-4 md:mt-0">
+              Explore Products
+            </Button>
+          </Link>
+        </section>
       </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
-          />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
-    </div>
   );
 }
