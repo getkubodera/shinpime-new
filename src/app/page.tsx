@@ -21,6 +21,7 @@ const pageData = {
           "短時間で自分を見つめ直すためのシンプルなセッション。",
           "主にカウンセリング中心で、日常生活に取り入れやすいアドバイスを提供。",
         ],
+        link: "https://app.squareup.com/appointments/book/classes/g54b6amqlwgbuh/LEJYC25N3NR7G/classes", // Add link here
       },
       {
         name: "ディープダイブコース：「心の神秘と向き合う」",
@@ -32,6 +33,7 @@ const pageData = {
           "主なテーマ例：人生の目的探し、感情の解放、自己成長のプロセス。",
           "セッション後にメールフォローアップ（アドバイスや質問回答付き）。",
         ],
+        link: "/consultation/deep-dive", // Add link here
       },
       {
         name: "トランスフォーメーションコース：「本来の自分に還る」",
@@ -40,23 +42,24 @@ const pageData = {
         points: [
           "人生の大きな転換期にいる人、深い変容を求めている人、東洋思想に基づく指導をじっくり学びたい人。",
           "継続的なサポートを提供し、大きな人生の変革を目指すコース。",
-          "月3～4回のセッションを通じて、包括的な自己変革プランを作成し、実践をサポート。",
+          "月4回のセッションを通じて、包括的な自己変革プランを作成し、実践をサポート。",
           "主なテーマ例：長期的な目標達成、東洋思想を生かした生き方の指導、無や空の哲学の応用。",
           "人生の大きな転換期にいる人、深い変容を求めている人、東洋思想に基づく指導をじっくり学びたい人。",
         ],
+        link: "/consultation/transformation", // Add link here
       },
     ],
   },
   books: {
-    title: "Books on Spirituality",
+    title: "shinpi me ブックス",
     description:
-        "Discover profound insights through our carefully curated spiritual books. Embark on a journey of growth and enlightenment.",
+        "これらの書籍があなたに日本の文化や思想、世界観に関する新たな視点を与え、自らの神秘に気づき、内なる自由を得るための一助になります。\n",
     link: "/books",
   },
   products: {
-    title: "Spiritual Products",
+    title: "shinpi me プロダクト",
     description:
-        "Enhance your spiritual practices with our exclusive products designed to complement your journey.",
+        "これらの品々にこめられた日本文化の根底にある精神が、空間からあなたの心を癒し、励まします。",
     link: "/products",
   },
 };
@@ -96,9 +99,11 @@ export default function HomePage() {
                       ))}
                     </ul>
                     <div className="mt-6">
-                      <Button className="w-full bg-blue-600 hover:bg-blue-700">
-                        予約
-                      </Button>
+                      <Link href={plan.link}> {/* Wrap Button with Link */}
+                        <Button className="w-full bg-blue-600 hover:bg-blue-700">
+                          予約
+                        </Button>
+                      </Link>
                     </div>
                   </CardContent>
                 </Card>
@@ -116,7 +121,7 @@ export default function HomePage() {
           </div>
           <Link href={pageData.books.link}>
             <Button className="bg-blue-600 hover:bg-blue-700 mt-4 md:mt-0">
-              Explore Books
+              書籍へ
             </Button>
           </Link>
         </section>
@@ -131,7 +136,7 @@ export default function HomePage() {
           </div>
           <Link href={pageData.products.link}>
             <Button className="bg-blue-600 hover:bg-blue-700 mt-4 md:mt-0">
-              Explore Products
+              商品へ
             </Button>
           </Link>
         </section>
