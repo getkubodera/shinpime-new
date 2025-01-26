@@ -21,7 +21,7 @@ const pageData = {
           "短時間で自分を見つめ直すためのシンプルなセッション。",
           "主にカウンセリング中心で、日常生活に取り入れやすいアドバイスを提供。",
         ],
-        link: "https://app.squareup.com/appointments/book/classes/g54b6amqlwgbuh/LEJYC25N3NR7G/classes", // Add link here
+        link: "https://app.squareup.com/appointments/book/4lq2tdfpxuuee3/LVEG5SJSD88B9/start", // Add link here
       },
       {
         name: "ディープダイブコース：「心の神秘と向き合う」",
@@ -33,7 +33,7 @@ const pageData = {
           "主なテーマ例：人生の目的探し、感情の解放、自己成長のプロセス。",
           "セッション後にメールフォローアップ（アドバイスや質問回答付き）。",
         ],
-        link: "/consultation/deep-dive", // Add link here
+        link: "https://app.squareup.com/appointments/book/4lq2tdfpxuuee3/LVEG5SJSD88B9/start", // Add link here
       },
       {
         name: "トランスフォーメーションコース：「本来の自分に還る」",
@@ -46,7 +46,7 @@ const pageData = {
           "主なテーマ例：長期的な目標達成、東洋思想を生かした生き方の指導、無や空の哲学の応用。",
           "人生の大きな転換期にいる人、深い変容を求めている人、東洋思想に基づく指導をじっくり学びたい人。",
         ],
-        link: "/consultation/transformation", // Add link here
+        link: "https://app.squareup.com/appointments/book/4lq2tdfpxuuee3/LVEG5SJSD88B9/start", // Add link here
       },
     ],
   },
