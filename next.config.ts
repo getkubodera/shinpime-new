@@ -9,6 +9,11 @@ const nextConfig: NextConfig = {
                 hostname: "m.media-amazon.com",
                 pathname: "/**",
             },
+            {
+                protocol: "https",
+                hostname: "blog.shinpi.me",
+                pathname: "/**",
+            },
         ],
     },
 };
