@@ -4,6 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { CheckCircle } from "lucide-react";
 import Link from "next/link";
+import TextSlider from "@/components/custom/slider/TextSlider";
 
 // Data for the page
 const pageData = {
@@ -69,13 +70,7 @@ export default function HomePage() {
       <main className="container mx-auto px-4 py-8 space-y-12">
         {/* Consultation Section */}
         <section className="text-center space-y-4">
-          <h1 className="text-4xl font-bold text-gray-800 text-left">
-            {pageData.consultation.title}
-          </h1>
-          <p className="text-lg text-gray-600 text-left">
-            {pageData.consultation.description}
-          </p>
-
+          <TextSlider></TextSlider>
           <div className="grid md:grid-cols-3 gap-6">
             {pageData.consultation.plans.map((plan, index) => (
                 <Card key={index} className="shadow-md h-full flex flex-col justify-between">
