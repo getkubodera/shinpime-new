@@ -18,7 +18,7 @@ export default function Footer() {
         links: [
             { name: "ホーム", href: "/" },
             { name: "概要", href: "/about" },
-            { name: "製品", href: "/products" },
+         //   { name: "製品", href: "/products" },
             { name: "書籍", href: "/books" },
             { name: "ブログ", href: "https://blog.shinpi.me" },
         ],
