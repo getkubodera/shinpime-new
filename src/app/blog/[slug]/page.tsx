@@ -220,9 +220,17 @@ function BlogPostContent() {
   const processContent = (content: string): string => {
     if (!content) return '';
     
-    // Updated regex to match the entire URL including query parameters
-    const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\?[^\s<]*)?/g;
-    return content.replace(youtubeRegex, '');
+    // Remove YouTube links from content since they're displayed separately
+    const contentWithoutYoutube = content.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\?[^\s<]*)?/g, '');
+    
+    // Clean up specific unwanted text while preserving HTML formatting
+    const cleanedContent = contentWithoutYoutube
+      .replace(/&nbsp;/g, ' ')
+      .replace(/Uncategorized/gi, '')
+      .replace(/uncategorized/gi, '')
+      .replace(/カテゴリーなし/gi, '');
+    
+    return cleanedContent;
   };
 
   // Format date
