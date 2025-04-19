@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+// Force dynamic rendering to prevent build errors
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
 import { Calendar,  ArrowRight, MessageSquare, Facebook, Twitter, Instagram } from "lucide-react";
@@ -58,15 +61,16 @@ export default function BlogPage() {
       const response = await fetch(`${WORDPRESS_API_URL}/posts?number=50`);
       const data = await response.json();
       
-      // Ensure we have at least 5 posts for suggestions
+      // Ensure we have at least 12 posts for the page
       if (data.posts && data.posts.length > 0) {
         setAllPosts(data.posts);
         
-        // Set the latest 5 posts for the featured section
-        setLatestPosts(data.posts.slice(0, 5));
+        // Set the latest 12 posts for the page
+        const allDisplayedPosts = data.posts.slice(0, 12);
+        setLatestPosts(allDisplayedPosts);
         
         // Fetch comments for the latest posts
-        data.posts.slice(0, 5).forEach((post: WordPressPost) => {
+        allDisplayedPosts.forEach((post: WordPressPost) => {
           fetchPostComments(post.ID);
         });
         
@@ -117,11 +121,11 @@ export default function BlogPage() {
   useEffect(() => {
     const loadInitialData = async () => {
       await fetchAllPosts();
-      await fetchPosts(currentPage);
     };
     
     loadInitialData();
-  }, [currentPage]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // Handle search
   const handleSearch = (query: string) => {
@@ -231,7 +235,7 @@ export default function BlogPage() {
         <section className="py-12 bg-gradient-to-b from-background to-background/80">
           <div className="container mx-auto px-4">
             <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
-              最新の記事
+              ブログ記事
             </h2>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {latestPosts.map((post, index) => (
@@ -364,86 +368,17 @@ export default function BlogPage() {
         </section>
       )}
 
-      {/* Blog Posts Grid */}
+      {/* Remove the Blog Posts Grid section and keep only the "View All Blogs" link */}
       <section className="py-12">
         <div className="container mx-auto px-4">
-          {isLoading ? (
-            <div className="text-center py-12">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary mx-auto"></div>
-            </div>
-          ) : (
-            <>
-              {searchQuery && (
-                <h2 className="text-2xl font-bold text-primary mb-8">
-                  検索結果: &ldquo;{searchQuery}&rdquo;
-                </h2>
-              )}
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                {posts.map((post) => (
-                  <Card key={post.ID} className="group hover:shadow-lg transition-shadow duration-300 flex flex-col h-full">
-                    <Link href={`/blog/${post.slug}`} className="flex flex-col h-full">
-                      <CardHeader className="space-y-2">
-                        {post.featured_image && (
-                          <div className="relative w-full h-48 overflow-hidden rounded-t-lg">
-                            <Image
-                              src={post.featured_image}
-                              alt={post.title}
-                              fill
-                              className="object-cover group-hover:scale-105 transition-transform duration-300"
-                            />
-                          </div>
-                        )}
-                        <CardTitle className="text-xl group-hover:text-primary transition-colors duration-300 line-clamp-2 min-h-[3.5rem]">
-                          {post.title}
-                        </CardTitle>
-                        <CardDescription className="flex items-center gap-2">
-                          <Calendar className="w-4 h-4" />
-                          {formatDate(post.date)}
-                          {post.comment_count !== undefined && (
-                            <span className="flex items-center gap-1 ml-2">
-                              <MessageSquare className="w-4 h-4" />
-                              {post.comment_count}
-                            </span>
-                          )}
-                        </CardDescription>
-                      </CardHeader>
-                      <CardContent className="flex-grow">
-                        <p className="text-muted-foreground line-clamp-3 min-h-[4.5rem]">
-                          {stripHtmlAndLimit(post.excerpt, 100)}
-                        </p>
-                      </CardContent>
-                      <CardFooter className="mt-auto pt-4 border-t">
-                        <Button variant="ghost" className="w-full group-hover:text-primary transition-colors duration-300">
-                          続きを読む
-                          <ArrowRight className="w-4 h-4 ml-2" />
-                        </Button>
-                      </CardFooter>
-                    </Link>
-                  </Card>
-                ))}
-              </div>
-
-              {/* Pagination */}
-              {totalPages > 1 && (
-                <div className="flex justify-center gap-2 mt-12">
-                  <Button
-                    variant="outline"
-                    onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
-                    disabled={currentPage === 1}
-                  >
-                    前のページ
-                  </Button>
-                  <Button
-                    variant="outline"
-                    onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
-                    disabled={currentPage === totalPages}
-                  >
-                    次のページ
-                  </Button>
-                </div>
-              )}
-            </>
-          )}
+          <div className="flex justify-center">
+            <Link href="/blog/all?page_no=1">
+              <Button variant="outline" className="flex items-center gap-2">
+                すべてのブログを見る
+                <ArrowRight className="w-4 h-4" />
+              </Button>
+            </Link>
+          </div>
         </div>
       </section>
 
