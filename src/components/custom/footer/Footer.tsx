@@ -20,7 +20,7 @@ export default function Footer() {
             { name: "概要", href: "/about" },
          //   { name: "製品", href: "/products" },
             { name: "書籍", href: "/books" },
-            { name: "ブログ", href: "https://blog.shinpi.me" },
+            { name: "ブログ", href: "/blog" },
         ],
         copyright: `© ${new Date().getFullYear()} Shinpi Me. 無断転載を禁じます`,
     };
