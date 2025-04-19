@@ -59,19 +59,73 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     const fetchPost = async () => {
+      setIsLoading(true);
       try {
-        const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${params.slug}`);
-        const posts = await response.json();
-        if (posts.length > 0) {
-          setPost(posts[0]);
+        // Fix the API URL format - WordPress API expects a different format for slug queries
+        const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${slug}`, {
+          method: 'GET',
+          headers: {
+            'Accept': 'application/json',
+          },
+          cache: 'no-store',
+        });
+        
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+        
+        const data = await response.json();
+        
+        // WordPress API returns an array of posts, we need the first one
+        if (data.posts && data.posts.length > 0) {
+          const postData = data.posts[0];
+          setPost(postData);
+          
+          // Extract YouTube links from content
+          if (postData.content) {
+            const youtubeLinks = extractYoutubeLinks(postData.content);
+            setYoutubeVideos(youtubeLinks);
+          }
+          
+          // Fetch comments for this post
+          if (postData.ID) {
+            try {
+              const commentsResponse = await fetch(`${WORDPRESS_API_URL}/posts/${postData.ID}/replies`, {
+                method: 'GET',
+                headers: {
+                  'Accept': 'application/json',
+                },
+                cache: 'no-store',
+              });
+              
+              if (!commentsResponse.ok) {
+                throw new Error(`HTTP error! status: ${commentsResponse.status}`);
+              }
+              
+              const commentsData = await commentsResponse.json();
+              setComments(commentsData.comments || []);
+            } catch (commentError) {
+              console.error('Error fetching comments:', commentError);
+              setComments([]);
+            }
+          }
+        } else {
+          // No post found with this slug
+          setPost(null);
         }
       } catch (error) {
         console.error('Error fetching post:', error);
+        // Set post to null to show error state
+        setPost(null);
+      } finally {
+        setIsLoading(false);
       }
     };
 
-    fetchPost();
-  }, [params.slug, WORDPRESS_API_URL]);
+    if (slug) {
+      fetchPost();
+    }
+  }, [slug, WORDPRESS_API_URL]);
 
   // Extract YouTube links from content
   const extractYoutubeLinks = (content: string): string[] => {
