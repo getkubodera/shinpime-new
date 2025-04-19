@@ -36,7 +36,53 @@ interface Comment {
   date: string;
 }
 
-export default function BlogPage() {
+// Add a loading state component
+function LoadingState() {
+  return (
+    <section className="py-12 bg-gradient-to-b from-background to-background/80">
+      <div className="container mx-auto px-4">
+        <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
+          ブログ記事
+        </h2>
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+          {/* Featured post skeleton */}
+          <Card className="md:col-span-2 md:row-span-2 group hover:shadow-lg transition-shadow duration-300 flex flex-col h-full overflow-hidden">
+            <div className="h-64 md:h-80 bg-muted animate-pulse"></div>
+            <CardHeader className="space-y-2">
+              <div className="h-8 bg-muted animate-pulse mb-2"></div>
+              <div className="h-4 bg-muted animate-pulse w-3/4 mb-2"></div>
+              <div className="h-4 bg-muted animate-pulse w-1/2"></div>
+            </CardHeader>
+            <CardContent className="flex-grow">
+              <div className="h-4 bg-muted animate-pulse w-full mb-2"></div>
+              <div className="h-4 bg-muted animate-pulse w-5/6 mb-2"></div>
+              <div className="h-4 bg-muted animate-pulse w-4/6"></div>
+            </CardContent>
+          </Card>
+          
+          {/* Regular post skeletons */}
+          {[...Array(5)].map((_, i) => (
+            <Card key={i} className="group hover:shadow-lg transition-shadow duration-300 flex flex-col h-full overflow-hidden">
+              <div className="h-48 bg-muted animate-pulse"></div>
+              <CardHeader className="space-y-2">
+                <div className="h-6 bg-muted animate-pulse mb-2"></div>
+                <div className="h-4 bg-muted animate-pulse w-3/4 mb-2"></div>
+                <div className="h-4 bg-muted animate-pulse w-1/2"></div>
+              </CardHeader>
+              <CardContent className="flex-grow">
+                <div className="h-4 bg-muted animate-pulse w-full mb-2"></div>
+                <div className="h-4 bg-muted animate-pulse w-5/6"></div>
+              </CardContent>
+            </Card>
+          ))}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+// Main content component
+function BlogContent() {
   const [posts, setPosts] = useState<WordPressPost[]>([]);
   const [latestPosts, setLatestPosts] = useState<WordPressPost[]>([]);
   const [postComments, setPostComments] = useState<Record<number, Comment[]>>({});
@@ -58,6 +104,7 @@ export default function BlogPage() {
 
   // Fetch all posts for suggestions
   const fetchAllPosts = async () => {
+    setIsLoading(true);
     try {
       // Fetch more posts for suggestions to ensure we have enough
       const response = await fetch(`${WORDPRESS_API_URL}/posts?number=50`);
@@ -85,6 +132,8 @@ export default function BlogPage() {
       }
     } catch (error) {
       console.error('Error fetching all posts:', error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -244,209 +293,224 @@ export default function BlogPage() {
       </section>
 
       {/* Featured Latest Posts Section */}
-      {latestPosts.length > 0 && !searchQuery && (
-        <section className="py-12 bg-gradient-to-b from-background to-background/80">
-          <div className="container mx-auto px-4">
-            <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
-              ブログ記事
-            </h2>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {latestPosts.map((post, index) => (
-                <Card 
-                  key={post.ID} 
-                  className={`group hover:shadow-lg transition-shadow duration-300 flex flex-col h-full ${
-                    index === 0 ? 'md:col-span-2 md:row-span-2' : ''
-                  }`}
-                >
-                  <Link href={`/blog/${post.ID}-${post.slug}`} className="flex flex-col h-full">
-                    <CardHeader className="space-y-2">
-                      {post.featured_image && (
-                        <div className={`relative w-full overflow-hidden rounded-t-lg ${
-                          index === 0 ? 'h-64 md:h-80' : 'h-48'
-                        }`}>
-                          <Image
-                            src={post.featured_image}
-                            alt={post.title}
-                            fill
-                            className="object-cover group-hover:scale-105 transition-transform duration-300"
-                          />
-                          {index === 0 && (
-                            <div className="absolute top-4 left-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full">
-                              最新記事
+      {isLoading ? (
+        <LoadingState />
+      ) : (
+        <>
+          {latestPosts.length > 0 && !searchQuery && (
+            <section className="py-12 bg-gradient-to-b from-background to-background/80">
+              <div className="container mx-auto px-4">
+                <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
+                  ブログ記事
+                </h2>
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                  {latestPosts.map((post, index) => (
+                    <Card 
+                      key={post.ID} 
+                      className={`group hover:shadow-lg transition-shadow duration-300 flex flex-col h-full ${
+                        index === 0 ? 'md:col-span-2 md:row-span-2' : ''
+                      }`}
+                    >
+                      <Link href={`/blog/${post.ID}-${post.slug}`} className="flex flex-col h-full">
+                        <CardHeader className="space-y-2">
+                          {post.featured_image && (
+                            <div className={`relative w-full overflow-hidden rounded-t-lg ${
+                              index === 0 ? 'h-64 md:h-80' : 'h-48'
+                            }`}>
+                              <Image
+                                src={post.featured_image}
+                                alt={post.title}
+                                fill
+                                className="object-cover group-hover:scale-105 transition-transform duration-300"
+                              />
+                              {index === 0 && (
+                                <div className="absolute top-4 left-4 bg-black text-white text-xs font-bold px-3 py-1 rounded-full">
+                                  最新記事
+                                </div>
+                              )}
                             </div>
                           )}
-                        </div>
-                      )}
-                      <CardTitle className={`group-hover:text-primary transition-colors duration-300 line-clamp-2 ${
-                        index === 0 ? 'text-2xl min-h-[4rem]' : 'text-xl min-h-[3.5rem]'
-                      }`}>
-                        {post.title}
-                      </CardTitle>
-                      <CardDescription className="flex items-center gap-2">
-                        <Calendar className="w-4 h-4" />
-                        {formatDate(post.date)}
-                        {post.comment_count !== undefined && (
-                          <span className="flex items-center gap-1 ml-2">
-                            <MessageSquare className="w-4 h-4" />
-                            {post.comment_count}
-                          </span>
-                        )}
-                      </CardDescription>
-                    </CardHeader>
-                    <CardContent className="flex-grow">
-                      <p className="text-muted-foreground line-clamp-3 min-h-[4.5rem]">
-                        {stripHtmlAndLimit(post.excerpt, index === 0 ? 150 : 100)}
-                      </p>
-                      
-                      {/* Display top comments for featured posts */}
-                      {index === 0 && postComments[post.ID] && postComments[post.ID].length > 0 && (
-                        <div className="mt-4 pt-4 border-t border-border/30">
-                          <h3 className="text-sm font-medium mb-2">最新のコメント</h3>
-                          <div className="space-y-3">
-                            {postComments[post.ID].map(comment => (
-                              <div key={comment.ID} className="flex gap-2 text-sm">
-                                <Avatar className="h-6 w-6">
-                                  <AvatarImage src={comment.author_avatar} alt={typeof comment.author === 'string' ? comment.author : comment.author.name} />
-                                  <AvatarFallback>{typeof comment.author === 'string' ? comment.author.charAt(0) : comment.author.name.charAt(0)}</AvatarFallback>
-                                </Avatar>
-                                <div>
-                                  <span className="font-medium text-xs">{typeof comment.author === 'string' ? comment.author : comment.author.name}</span>
-                                  <p className="text-muted-foreground text-xs line-clamp-2">{cleanCommentContent(comment.content)}</p>
-                                </div>
+                          <CardTitle className={`group-hover:text-primary transition-colors duration-300 line-clamp-2 ${
+                            index === 0 ? 'text-2xl min-h-[4rem]' : 'text-xl min-h-[3.5rem]'
+                          }`}>
+                            {post.title}
+                          </CardTitle>
+                          <CardDescription className="flex items-center gap-2">
+                            <Calendar className="w-4 h-4" />
+                            {formatDate(post.date)}
+                            {post.comment_count !== undefined && (
+                              <span className="flex items-center gap-1 ml-2">
+                                <MessageSquare className="w-4 h-4" />
+                                {post.comment_count}
+                              </span>
+                            )}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardContent className="flex-grow">
+                          <p className="text-muted-foreground line-clamp-3 min-h-[4.5rem]">
+                            {stripHtmlAndLimit(post.excerpt, index === 0 ? 150 : 100)}
+                          </p>
+                          
+                          {/* Display top comments for featured posts */}
+                          {index === 0 && postComments[post.ID] && postComments[post.ID].length > 0 && (
+                            <div className="mt-4 pt-4 border-t border-border/30">
+                              <h3 className="text-sm font-medium mb-2">最新のコメント</h3>
+                              <div className="space-y-3">
+                                {postComments[post.ID].map(comment => (
+                                  <div key={comment.ID} className="flex gap-2 text-sm">
+                                    <Avatar className="h-6 w-6">
+                                      <AvatarImage src={comment.author_avatar} alt={typeof comment.author === 'string' ? comment.author : comment.author.name} />
+                                      <AvatarFallback>{typeof comment.author === 'string' ? comment.author.charAt(0) : comment.author.name.charAt(0)}</AvatarFallback>
+                                    </Avatar>
+                                    <div>
+                                      <span className="font-medium text-xs">{typeof comment.author === 'string' ? comment.author : comment.author.name}</span>
+                                      <p className="text-muted-foreground text-xs line-clamp-2">{cleanCommentContent(comment.content)}</p>
+                                    </div>
+                                  </div>
+                                ))}
                               </div>
-                            ))}
-                          </div>
-                        </div>
-                      )}
-                      
-                      {/* Share buttons for featured posts */}
-                      {index === 0 && (
-                        <div className="mt-4 pt-4 border-t border-border/30">
-                          <h3 className="text-sm font-medium mb-2">共有</h3>
-                          <div className="flex gap-2">
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/blog/${post.slug}`)}`, '_blank');
-                              }}
-                              className="text-[#1877F2] hover:text-[#1877F2]/80"
-                            >
-                              <Facebook className="w-4 h-4 mr-1" />
-                              Facebook
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${window.location.origin}/blog/${post.slug}`)}&text=${encodeURIComponent(post.title)}`, '_blank');
-                              }}
-                              className="text-[#1DA1F2] hover:text-[#1DA1F2]/80"
-                            >
-                              <Twitter className="w-4 h-4 mr-1" />
-                              Twitter
-                            </Button>
-                            <Button 
-                              variant="ghost" 
-                              size="sm"
-                              onClick={(e) => {
-                                e.preventDefault();
-                                e.stopPropagation();
-                                window.open(`https://www.instagram.com/`, '_blank');
-                              }}
-                              className="text-[#E4405F] hover:text-[#E4405F]/80"
-                            >
-                              <Instagram className="w-4 h-4 mr-1" />
-                              Instagram
-                            </Button>
-                          </div>
-                        </div>
-                      )}
-                    </CardContent>
-                    <CardFooter className="mt-auto pt-4 border-t">
-                      <Button variant="ghost" className="w-full group-hover:text-primary transition-colors duration-300">
-                        続きを読む
-                        <ArrowRight className="w-4 h-4 ml-2" />
-                      </Button>
-                    </CardFooter>
-                  </Link>
-                </Card>
-              ))}
-            </div>
-          </div>
-        </section>
-      )}
+                            </div>
+                          )}
+                          
+                          {/* Share buttons for featured posts */}
+                          {index === 0 && (
+                            <div className="mt-4 pt-4 border-t border-border/30">
+                              <h3 className="text-sm font-medium mb-2">共有</h3>
+                              <div className="flex gap-2">
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.open(`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(`${window.location.origin}/blog/${post.slug}`)}`, '_blank');
+                                  }}
+                                  className="text-[#1877F2] hover:text-[#1877F2]/80"
+                                >
+                                  <Facebook className="w-4 h-4 mr-1" />
+                                  Facebook
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.open(`https://twitter.com/intent/tweet?url=${encodeURIComponent(`${window.location.origin}/blog/${post.slug}`)}&text=${encodeURIComponent(post.title)}`, '_blank');
+                                  }}
+                                  className="text-[#1DA1F2] hover:text-[#1DA1F2]/80"
+                                >
+                                  <Twitter className="w-4 h-4 mr-1" />
+                                  Twitter
+                                </Button>
+                                <Button 
+                                  variant="ghost" 
+                                  size="sm"
+                                  onClick={(e) => {
+                                    e.preventDefault();
+                                    e.stopPropagation();
+                                    window.open(`https://www.instagram.com/`, '_blank');
+                                  }}
+                                  className="text-[#E4405F] hover:text-[#E4405F]/80"
+                                >
+                                  <Instagram className="w-4 h-4 mr-1" />
+                                  Instagram
+                                </Button>
+                              </div>
+                            </div>
+                          )}
+                        </CardContent>
+                        <CardFooter className="mt-auto pt-4 border-t">
+                          <Button variant="ghost" className="w-full group-hover:text-primary transition-colors duration-300">
+                            続きを読む
+                            <ArrowRight className="w-4 h-4 ml-2" />
+                          </Button>
+                        </CardFooter>
+                      </Link>
+                    </Card>
+                  ))}
+                </div>
+              </div>
+            </section>
+          )}
 
-      {/* Remove the Blog Posts Grid section and keep only the "View All Blogs" link */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="flex justify-center">
-            <Link href="/blog/all?page_no=1">
-              <Button variant="outline" className="flex items-center gap-2">
-                すべてのブログを見る
-                <ArrowRight className="w-4 h-4" />
-              </Button>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* Subscribe Section */}
-      <section className="py-12">
-        <div className="container mx-auto px-4">
-          <div className="max-w-4xl mx-auto">
-            <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl shadow-md border border-primary/20 overflow-hidden">
-              <div className="p-8 md:p-12 text-center">
-                <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">最新の記事を受け取る</h2>
-                <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  &ldquo;最新の記事&rdquo;をご覧ください
-                </p>
-                
-                {subscriptionStatus ? (
-                  <div className={`p-4 rounded-lg mb-4 ${subscriptionStatus.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
-                    {subscriptionStatus.message}
-                  </div>
-                ) : null}
-                
-                <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
-                  <Input 
-                    type="email" 
-                    placeholder="メールアドレス" 
-                    className="flex-1"
-                    value={subscriberEmail}
-                    onChange={(e) => setSubscriberEmail(e.target.value)}
-                    required
-                    disabled={isSubscribing}
-                  />
-                  <Button 
-                    type="submit" 
-                    variant="default" 
-                    className="shadow-md"
-                    disabled={isSubscribing}
-                  >
-                    {isSubscribing ? (
-                      <div className="flex items-center">
-                        <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                        処理中...
-                      </div>
-                    ) : (
-                      '登録する'
-                    )}
+          {/* Remove the Blog Posts Grid section and keep only the "View All Blogs" link */}
+          <section className="py-12">
+            <div className="container mx-auto px-4">
+              <div className="flex justify-center">
+                <Link href="/blog/all?page_no=1">
+                  <Button variant="outline" className="flex items-center gap-2">
+                    すべてのブログを見る
+                    <ArrowRight className="w-4 h-4" />
                   </Button>
-                </form>
-                
-                <p className="text-xs text-muted-foreground mt-4">
-                  プライバシーポリシーに同意したものとみなされます。いつでも登録解除できます。
-                </p>
+                </Link>
               </div>
             </div>
-          </div>
-        </div>
-      </section>
+          </section>
+
+          {/* Subscribe Section */}
+          <section className="py-12">
+            <div className="container mx-auto px-4">
+              <div className="max-w-4xl mx-auto">
+                <div className="bg-gradient-to-r from-primary/10 to-primary/5 rounded-xl shadow-md border border-primary/20 overflow-hidden">
+                  <div className="p-8 md:p-12 text-center">
+                    <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">最新の記事を受け取る</h2>
+                    <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
+                      &ldquo;最新の記事&rdquo;をご覧ください
+                    </p>
+                    
+                    {subscriptionStatus ? (
+                      <div className={`p-4 rounded-lg mb-4 ${subscriptionStatus.success ? 'bg-green-50 text-green-800' : 'bg-red-50 text-red-800'}`}>
+                        {subscriptionStatus.message}
+                      </div>
+                    ) : null}
+                    
+                    <form onSubmit={handleSubscribe} className="flex flex-col sm:flex-row gap-3 max-w-md mx-auto">
+                      <Input 
+                        type="email" 
+                        placeholder="メールアドレス" 
+                        className="flex-1"
+                        value={subscriberEmail}
+                        onChange={(e) => setSubscriberEmail(e.target.value)}
+                        required
+                        disabled={isSubscribing}
+                      />
+                      <Button 
+                        type="submit" 
+                        variant="default" 
+                        className="shadow-md"
+                        disabled={isSubscribing}
+                      >
+                        {isSubscribing ? (
+                          <div className="flex items-center">
+                            <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
+                            処理中...
+                          </div>
+                        ) : (
+                          '登録する'
+                        )}
+                      </Button>
+                    </form>
+                    
+                    <p className="text-xs text-muted-foreground mt-4">
+                      プライバシーポリシーに同意したものとみなされます。いつでも登録解除できます。
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </section>
+        </>
+      )}
     </main>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function BlogPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <BlogContent />
+    </Suspense>
   );
 } 
