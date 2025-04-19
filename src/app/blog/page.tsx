@@ -24,6 +24,8 @@ interface WordPressPost {
   URL: string;
   slug: string;
   comment_count?: number;
+  status: string;
+  deleted: boolean;
 }
 
 interface Comment {
@@ -61,12 +63,17 @@ export default function BlogPage() {
       const response = await fetch(`${WORDPRESS_API_URL}/posts?number=50`);
       const data = await response.json();
       
+      // Filter out deleted or unpublished posts
+      const validPosts = data.posts.filter((post: WordPressPost) => 
+        post.status === 'publish' && !post.deleted
+      );
+      
       // Ensure we have at least 12 posts for the page
-      if (data.posts && data.posts.length > 0) {
-        setAllPosts(data.posts);
+      if (validPosts && validPosts.length > 0) {
+        setAllPosts(validPosts);
         
         // Set the latest 12 posts for the page
-        const allDisplayedPosts = data.posts.slice(0, 12);
+        const allDisplayedPosts = validPosts.slice(0, 12);
         setLatestPosts(allDisplayedPosts);
         
         // Fetch comments for the latest posts
@@ -74,7 +81,7 @@ export default function BlogPage() {
           fetchPostComments(post.ID);
         });
         
-        console.log(`Loaded ${data.posts.length} posts for suggestions`);
+        console.log(`Loaded ${validPosts.length} valid posts for suggestions`);
       }
     } catch (error) {
       console.error('Error fetching all posts:', error);
@@ -108,8 +115,14 @@ export default function BlogPage() {
       );
       
       const data = await response.json();
-      setPosts(data.posts);
-      setTotalPages(Math.ceil(data.found / POSTS_PER_PAGE));
+      
+      // Filter out deleted or unpublished posts
+      const validPosts = data.posts.filter((post: WordPressPost) => 
+        post.status === 'publish' && !post.deleted
+      );
+      
+      setPosts(validPosts);
+      setTotalPages(Math.ceil(validPosts.length / POSTS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching posts:', error);
     } finally {

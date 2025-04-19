@@ -3,8 +3,9 @@
 import { useState, useEffect, useRef } from 'react';
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Search } from "lucide-react";
+import { Search, List } from "lucide-react";
 import { createPortal } from 'react-dom';
+import Link from 'next/link';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
@@ -101,11 +102,11 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
 
   // Render dropdown using portal
   const renderDropdown = () => {
-    if (!mounted || !showSuggestions || displayedSuggestions.length === 0) return null;
+    if (!mounted || !showSuggestions) return null;
 
     return createPortal(
       <div 
-        className="fixed z-[9999] bg-background border-2 border-primary/30 rounded-md shadow-xl overflow-auto" 
+        className="absolute z-[9999] bg-background border-2 border-primary/30 rounded-md shadow-xl overflow-auto" 
         style={{ 
           top: `${dropdownPosition.top}px`, 
           left: `${dropdownPosition.left}px`, 
@@ -115,24 +116,48 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
         }}
       >
         {displayedSuggestions.length > 0 ? (
-          displayedSuggestions.map((suggestion, index) => (
-            <button
-              key={index}
-              type="button"
-              className="suggestion-item w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground transition-colors text-sm border-b border-border/30 last:border-b-0"
-              onClick={(e) => {
-                e.preventDefault();
-                e.stopPropagation();
-                handleSuggestionClick(suggestion);
-              }}
+          <>
+            {displayedSuggestions.map((suggestion, index) => (
+              <button
+                key={index}
+                type="button"
+                className="suggestion-item w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground transition-colors text-sm border-b border-border/30 last:border-b-0"
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  handleSuggestionClick(suggestion);
+                }}
+              >
+                {suggestion}
+              </button>
+            ))}
+            
+            {/* All Blogs Button */}
+            <Link 
+              href="/blog/all?page_no=1" 
+              className="suggestion-item w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground transition-colors text-sm border-t border-border/30 flex items-center justify-between"
+              onClick={() => setShowSuggestions(false)}
             >
-              {suggestion}
-            </button>
-          ))
+              <span>すべての記事を見る</span>
+              <List className="w-4 h-4" />
+            </Link>
+          </>
         ) : (
-          <div className="px-4 py-3 text-sm text-muted-foreground">
-            検索結果がありません
-          </div>
+          <>
+            <div className="px-4 py-3 text-sm text-muted-foreground">
+              検索結果がありません
+            </div>
+            
+            {/* All Blogs Button */}
+            <Link 
+              href="/blog/all?page_no=1" 
+              className="suggestion-item w-full px-4 py-3 text-left hover:bg-accent hover:text-accent-foreground transition-colors text-sm border-t border-border/30 flex items-center justify-between"
+              onClick={() => setShowSuggestions(false)}
+            >
+              <span>すべての記事を見る</span>
+              <List className="w-4 h-4" />
+            </Link>
+          </>
         )}
       </div>,
       document.body

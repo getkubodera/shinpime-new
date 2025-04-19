@@ -22,6 +22,8 @@ interface WordPressPost {
   URL: string;
   slug: string;
   comment_count?: number;
+  status: string;
+  deleted: boolean;
 }
 
 // Add a loading state component
@@ -75,14 +77,19 @@ function AllBlogPostsContent() {
       
       const data = await response.json();
       
+      // Filter out deleted or unpublished posts
+      const validPosts = data.posts.filter((post: WordPressPost) => 
+        post.status === 'publish' && !post.deleted
+      );
+      
       // Log the first post to debug the slug
-      if (data.posts && data.posts.length > 0) {
-        console.log('First post data:', data.posts[0]);
-        console.log('First post slug:', data.posts[0].slug);
+      if (validPosts && validPosts.length > 0) {
+        console.log('First post data:', validPosts[0]);
+        console.log('First post slug:', validPosts[0].slug);
       }
       
       // Ensure each post has a valid slug
-      const postsWithValidSlugs = data.posts.map((post: WordPressPost) => {
+      const postsWithValidSlugs = validPosts.map((post: WordPressPost) => {
         // If the slug is missing or invalid, try to extract it from the URL
         if (!post.slug || post.slug === '') {
           const urlParts = post.URL.split('/');
@@ -104,8 +111,8 @@ function AllBlogPostsContent() {
       });
       
       setPosts(postsWithValidSlugs);
-      setTotalPosts(data.found);
-      setTotalPages(Math.ceil(data.found / POSTS_PER_PAGE));
+      setTotalPosts(validPosts.length);
+      setTotalPages(Math.ceil(validPosts.length / POSTS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching posts:', error);
       // Set empty posts array to avoid rendering errors

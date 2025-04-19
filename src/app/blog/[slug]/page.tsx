@@ -55,7 +55,6 @@ function BlogPostContent() {
   const [commenterEmail, setCommenterEmail] = useState('');
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showCommentForm, setShowCommentForm] = useState(false);
-  const [youtubeVideos, setYoutubeVideos] = useState<string[]>([]);
   const [videoErrors, setVideoErrors] = useState<Record<string, boolean>>({});
   const [subscriberEmail, setSubscriberEmail] = useState('');
   const [isSubscribing, setIsSubscribing] = useState(false);
@@ -159,12 +158,6 @@ function BlogPostContent() {
         
         setPost(postData);
         
-        // Extract YouTube links from content
-        if (postData.content) {
-          const youtubeLinks = extractYoutubeLinks(postData.content);
-          setYoutubeVideos(youtubeLinks);
-        }
-        
         // Fetch comments for this post
         if (postData.ID) {
           try {
@@ -201,17 +194,22 @@ function BlogPostContent() {
     }
   }, [slug]);
 
-  // Extract YouTube links from content
+  // Extract YouTube links from content - keeping this for reference but not using it
   const extractYoutubeLinks = (content: string): string[] => {
     // Updated regex to capture the entire URL including query parameters
     const youtubeRegex = /(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\?[^\s<]*)?/g;
     const matches = content.match(youtubeRegex) || [];
-    return matches.map(url => {
+    
+    // Extract video IDs and deduplicate them
+    const videoIds = matches.map(url => {
       // Extract video ID - now we need to handle the full URL
       const videoIdMatch = url.match(/(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})/);
       const videoId = videoIdMatch ? videoIdMatch[1] : '';
       return videoId;
     }).filter(id => id !== '');
+    
+    // Remove duplicates using Set
+    return [...new Set(videoIds)];
   };
 
   // Get YouTube embed URL from video ID
@@ -232,21 +230,61 @@ function BlogPostContent() {
     }));
   };
 
-  // Process content to remove YouTube links
+  // Process content to preserve YouTube embeds
   const processContent = (content: string): string => {
     if (!content) return '';
     
-    // Remove YouTube links from content since they're displayed separately
-    const contentWithoutYoutube = content.replace(/(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\?[^\s<]*)?/g, '');
+    // First, clean up HTML entities and formatting
+    let processedContent = content
+      .replace(/&gt;/g, '>')
+      .replace(/&lt;/g, '<')
+      .replace(/&quot;/g, '"')
+      .replace(/&amp;/g, '&')
+      .replace(/&nbsp;/g, ' ')
+      .replace(/>\s+</g, '><')
+      .replace(/\s+>/g, '>')
+      .replace(/>\s+/g, '>')
+      .replace(/\s+</g, '<');
+    
+    // Track processed video IDs to prevent duplicates
+    const processedVideoIds = new Set<string>();
+    
+    // Function to create a YouTube button
+    const createYoutubeButton = (videoId: string) => {
+      return `<div class="my-4"><a href="https://www.youtube.com/watch?v=${videoId}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center gap-2 px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="currentColor" class="w-5 h-5"><path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/></svg>YouTubeで動画を見る</a></div>`;
+    };
+    
+    // Step 1: Remove all iframes
+    processedContent = processedContent.replace(
+      /<iframe[^>]*src="(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})[^"]*"[^>]*><\/iframe>/g,
+      (match, videoId) => {
+        if (!processedVideoIds.has(videoId)) {
+          processedVideoIds.add(videoId);
+          return createYoutubeButton(videoId);
+        }
+        return '';
+      }
+    );
+    
+    // Step 2: Replace YouTube links with buttons
+    processedContent = processedContent.replace(
+      /(?:<p>)?(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:watch\?v=|embed\/)|youtu\.be\/)([a-zA-Z0-9_-]{11})(?:\?[^\s<]*)?(?:<\/p>)?/g,
+      (match, videoId) => {
+        if (!processedVideoIds.has(videoId)) {
+          processedVideoIds.add(videoId);
+          return createYoutubeButton(videoId);
+        }
+        return '';
+      }
+    );
     
     // Clean up specific unwanted text while preserving HTML formatting
-    const cleanedContent = contentWithoutYoutube
-      .replace(/&nbsp;/g, ' ')
+    processedContent = processedContent
       .replace(/Uncategorized/gi, '')
       .replace(/uncategorized/gi, '')
       .replace(/カテゴリーなし/gi, '');
     
-    return cleanedContent;
+    return processedContent;
   };
 
   // Format date
@@ -454,47 +492,13 @@ function BlogPostContent() {
           <div className="max-w-4xl mx-auto">
             <div className="bg-card rounded-xl shadow-md border border-border/50 overflow-hidden">
               <div className="p-6 md:p-10">
-                {/* YouTube Videos Section */}
-                {youtubeVideos.length > 0 && (
-                  <div className="mb-8">
-                    <h3 className="text-xl font-semibold mb-4 text-primary">関連動画</h3>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                      {youtubeVideos.map((videoId, index) => (
-                        <div key={index} className="relative w-full pb-[56.25%] rounded-lg overflow-hidden bg-muted/30">
-                          {videoErrors[videoId] ? (
-                            <div className="absolute inset-0 flex flex-col items-center justify-center p-4 text-center">
-                              <Youtube className="w-12 h-12 text-red-500 mb-4" />
-                              <p className="text-muted-foreground mb-4">この動画は埋め込み再生が無効になっています</p>
-                              <Button 
-                                variant="outline" 
-                                className="bg-red-500 hover:bg-red-600 text-white border-red-500"
-                                onClick={() => window.open(getYoutubeWatchUrl(videoId), '_blank')}
-                              >
-                                YouTubeで視聴する
-                              </Button>
-                            </div>
-                          ) : (
-                            <iframe
-                              src={getYoutubeEmbedUrl(videoId)}
-                              title={`YouTube video ${index + 1}`}
-                              className="absolute top-0 left-0 w-full h-full"
-                              allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                              allowFullScreen
-                              onError={() => handleVideoError(videoId)}
-                            ></iframe>
-                          )}
-                        </div>
-                      ))}
-                    </div>
-                  </div>
-                )}
-                
-                {/* Content in multiple columns for long content */}
+                {/* Main Content */}
                 <div className="prose prose-lg max-w-none prose-headings:text-primary prose-a:text-primary hover:prose-a:text-primary/80 prose-img:rounded-lg prose-img:shadow-md">
                   {post && post.content && post.content.length > 1000 ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
-                      <div dangerouslySetInnerHTML={{ __html: processContent(post.content.substring(0, Math.ceil(post.content.length / 2))) }} />
-                      <div dangerouslySetInnerHTML={{ __html: processContent(post.content.substring(Math.ceil(post.content.length / 2))) }} />
+                      {/* For long content, we'll use a single column on mobile and two columns on desktop */}
+                      {/* We're using a single div with the full content to preserve HTML integrity */}
+                      <div className="md:col-span-2" dangerouslySetInnerHTML={{ __html: processContent(post.content) }} />
                     </div>
                   ) : (
                     <div dangerouslySetInnerHTML={{ __html: processContent(post?.content || '') }} />
