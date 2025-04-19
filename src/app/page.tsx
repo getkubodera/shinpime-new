@@ -130,7 +130,7 @@ export default function HomePage() {
                   </CardContent>
                 </Card>
               </Link>
-              <Link href="https://blog.shinpi.me" className="block">
+              <Link href="/blog" className="block">
                 <Card className="astro-card card-hover h-full transition-all duration-300 hover:shadow-md">
                   <CardContent className="p-3 sm:p-4 flex flex-col items-center space-y-1 sm:space-y-2">
                     <FileText className="w-6 h-6 sm:w-8 sm:h-8 text-primary" />

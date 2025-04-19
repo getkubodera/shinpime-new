@@ -10,7 +10,7 @@ interface HeaderData {
 
 const headerData: HeaderData[] = [
     { name: "ホーム", href: "/" },
-    { name: "ブログ", href: "https://blog.shinpi.me" },
+    { name: "ブログ", href: "/blog" },
     { name: "概要", href: "/about" },
     { name: "書籍", href: "/books" },
     //{ name: "製品", href: "/products" },
