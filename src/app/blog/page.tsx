@@ -245,7 +245,7 @@ export default function BlogPage() {
                     index === 0 ? 'md:col-span-2 md:row-span-2' : ''
                   }`}
                 >
-                  <Link href={`/blog/${post.slug}`} className="flex flex-col h-full">
+                  <Link href={`/blog/${post.ID}-${post.slug}`} className="flex flex-col h-full">
                     <CardHeader className="space-y-2">
                       {post.featured_image && (
                         <div className={`relative w-full overflow-hidden rounded-t-lg ${
