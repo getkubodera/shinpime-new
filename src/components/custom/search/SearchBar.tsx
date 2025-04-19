@@ -6,20 +6,22 @@ import { Button } from "@/components/ui/button";
 import { Search, List } from "lucide-react";
 import { createPortal } from 'react-dom';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
-  suggestions: string[];
+  suggestions: { title: string; url: string }[];
 }
 
 export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [displayedSuggestions, setDisplayedSuggestions] = useState<string[]>([]);
+  const [displayedSuggestions, setDisplayedSuggestions] = useState<{ title: string; url: string }[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const [mounted, setMounted] = useState(false);
+  const router = useRouter();
   const SUGGESTIONS_PER_PAGE = 5;
 
   // Mount effect - runs once on component mount
@@ -31,7 +33,7 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
   // Filter suggestions when search query changes
   useEffect(() => {
     const filtered = suggestions.filter(suggestion =>
-      suggestion.toLowerCase().includes(searchQuery.toLowerCase())
+      suggestion.title.toLowerCase().includes(searchQuery.toLowerCase())
     );
     
     // Show only the first 5 suggestions
@@ -94,10 +96,13 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
     setShowSuggestions(false);
   };
 
-  const handleSuggestionClick = (suggestion: string) => {
-    setSearchQuery(suggestion);
-    onSearch(suggestion);
+  const handleSuggestionClick = (suggestion: { title: string; url: string }) => {
+    setSearchQuery(suggestion.title);
+    onSearch(suggestion.title);
     setShowSuggestions(false);
+    
+    // Use Next.js router for navigation
+    router.push(suggestion.url);
   };
 
   // Render dropdown using portal
@@ -128,7 +133,7 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
                   handleSuggestionClick(suggestion);
                 }}
               >
-                {suggestion}
+                {suggestion.title}
               </button>
             ))}
             

@@ -214,8 +214,11 @@ function BlogContent() {
 
   // Get suggestions from all posts
   const getSuggestions = () => {
-    // Only return titles for suggestions to reduce data transfer
-    return allPosts.map(post => post.title);
+    // Return both title and URL for each post with the correct ID-slug format
+    return allPosts.map(post => ({
+      title: post.title,
+      url: `/blog/${post.ID}-${post.slug}`
+    }));
   };
 
   // Handle subscription
@@ -303,6 +306,15 @@ function BlogContent() {
                 <h2 className="text-2xl md:text-3xl font-bold text-primary mb-8 text-center">
                   ブログ記事
                 </h2>
+                
+                {/* Search Bar */}
+                <div className="max-w-2xl mx-auto mb-8">
+                  <SearchBar 
+                    onSearch={handleSearch} 
+                    suggestions={getSuggestions()} 
+                  />
+                </div>
+                
                 <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                   {latestPosts.map((post, index) => (
                     <Card 
