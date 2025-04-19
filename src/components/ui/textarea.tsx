@@ -2,6 +2,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+// This interface extends HTMLTextAreaElement but doesn't add any new properties
+// It's used for type consistency with other form components
 export interface TextareaProps
   extends React.TextareaHTMLAttributes<HTMLTextAreaElement> {}
 

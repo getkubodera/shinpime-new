@@ -14,13 +14,11 @@ interface SearchBarProps {
 export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSuggestions, setShowSuggestions] = useState(false);
-  const [filteredSuggestions, setFilteredSuggestions] = useState<string[]>([]);
   const [displayedSuggestions, setDisplayedSuggestions] = useState<string[]>([]);
   const searchRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
   const [dropdownPosition, setDropdownPosition] = useState({ top: 0, left: 0, width: 0 });
   const [mounted, setMounted] = useState(false);
-
   const SUGGESTIONS_PER_PAGE = 5;
 
   // Mount effect - runs once on component mount
@@ -34,7 +32,6 @@ export default function SearchBar({ onSearch, suggestions }: SearchBarProps) {
     const filtered = suggestions.filter(suggestion =>
       suggestion.toLowerCase().includes(searchQuery.toLowerCase())
     );
-    setFilteredSuggestions(filtered);
     
     // Show only the first 5 suggestions
     setDisplayedSuggestions(filtered.slice(0, SUGGESTIONS_PER_PAGE));

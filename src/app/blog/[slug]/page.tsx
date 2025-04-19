@@ -2,13 +2,15 @@
 
 import { useState, useEffect } from 'react';
 import { Button } from "@/components/ui/button";
-import { Calendar, ArrowLeft, Share2, User, Clock, Bookmark, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
+import { Calendar, ArrowLeft, User, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import { useParams } from 'next/navigation';
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Metadata } from "next";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface WordPressPost {
   ID: number;
@@ -57,35 +59,19 @@ export default function BlogPostPage() {
 
   useEffect(() => {
     const fetchPost = async () => {
-      setIsLoading(true);
       try {
-        const response = await fetch(`${WORDPRESS_API_URL}/posts/slug:${slug}`);
-        const data = await response.json();
-        setPost(data);
-        
-        // Extract YouTube links from content
-        if (data && data.content) {
-          const youtubeLinks = extractYoutubeLinks(data.content);
-          setYoutubeVideos(youtubeLinks);
-        }
-        
-        // Fetch comments for this post
-        if (data && data.ID) {
-          const commentsResponse = await fetch(`${WORDPRESS_API_URL}/posts/${data.ID}/replies`);
-          const commentsData = await commentsResponse.json();
-          setComments(commentsData.comments || []);
+        const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${params.slug}`);
+        const posts = await response.json();
+        if (posts.length > 0) {
+          setPost(posts[0]);
         }
       } catch (error) {
         console.error('Error fetching post:', error);
-      } finally {
-        setIsLoading(false);
       }
     };
 
-    if (slug) {
-      fetchPost();
-    }
-  }, [slug]);
+    fetchPost();
+  }, [params.slug, WORDPRESS_API_URL]);
 
   // Extract YouTube links from content
   const extractYoutubeLinks = (content: string): string[] => {

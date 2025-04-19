@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Calendar, Clock, ArrowRight, MessageSquare, Facebook, Twitter, Instagram } from "lucide-react";
+import { Calendar,  ArrowRight, MessageSquare, Facebook, Twitter, Instagram } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
 import SearchBar from '@/components/custom/search/SearchBar';
@@ -113,11 +113,15 @@ export default function BlogPage() {
     }
   };
 
-  // Initial fetch
+  // Update useEffect with proper dependencies
   useEffect(() => {
-    fetchPosts(currentPage);
-    fetchAllPosts();
-  }, [currentPage]);
+    const loadInitialData = async () => {
+      await fetchAllPosts();
+      await fetchPosts(currentPage);
+    };
+    
+    loadInitialData();
+  }, [currentPage, fetchAllPosts, fetchPosts]);
 
   // Handle search
   const handleSearch = (query: string) => {
@@ -371,7 +375,7 @@ export default function BlogPage() {
             <>
               {searchQuery && (
                 <h2 className="text-2xl font-bold text-primary mb-8">
-                  検索結果: "{searchQuery}"
+                  検索結果: &ldquo;{searchQuery}&rdquo;
                 </h2>
               )}
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
@@ -451,7 +455,7 @@ export default function BlogPage() {
               <div className="p-8 md:p-12 text-center">
                 <h2 className="text-2xl md:text-3xl font-bold text-primary mb-4">最新の記事を受け取る</h2>
                 <p className="text-muted-foreground mb-6 max-w-2xl mx-auto">
-                  メールマガジンに登録して、最新の記事や特別なコンテンツをいち早く受け取りましょう。
+                  &ldquo;最新の記事&rdquo;をご覧ください
                 </p>
                 
                 {subscriptionStatus ? (
