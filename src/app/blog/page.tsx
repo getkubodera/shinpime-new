@@ -121,7 +121,7 @@ export default function BlogPage() {
     };
     
     loadInitialData();
-  }, [currentPage, fetchAllPosts, fetchPosts]);
+  }, [currentPage]);
 
   // Handle search
   const handleSearch = (query: string) => {
