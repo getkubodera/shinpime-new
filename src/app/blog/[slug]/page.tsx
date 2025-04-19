@@ -1,6 +1,9 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+// Force dynamic rendering to prevent build errors
+export const dynamic = 'force-dynamic';
+
+import { useState, useEffect, Suspense } from 'react';
 import { Button } from "@/components/ui/button";
 import { Calendar, ArrowLeft, User, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import Image from "next/image";
@@ -33,7 +36,17 @@ interface Comment {
   date: string;
 }
 
-export default function BlogPostPage() {
+// Loading component
+function LoadingState() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    </div>
+  );
+}
+
+// Main content component that uses useParams
+function BlogPostContent() {
   const [post, setPost] = useState<WordPressPost | null>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [comments, setComments] = useState<Comment[]>([]);
@@ -61,57 +74,102 @@ export default function BlogPostPage() {
     const fetchPost = async () => {
       setIsLoading(true);
       try {
-        // Fix the API URL format - WordPress API expects a different format for slug queries
-        const response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${slug}`, {
-          method: 'GET',
-          headers: {
-            'Accept': 'application/json',
-          },
-          cache: 'no-store',
-        });
+        console.log('Fetching post with slug:', slug);
+        
+        // Try to fetch the post by ID first if we have it in the URL
+        let postId = null;
+        if (slug.includes('-')) {
+          // Check if the slug contains an ID (e.g., "123-post-title")
+          const idMatch = slug.match(/^(\d+)-/);
+          if (idMatch) {
+            postId = idMatch[1];
+            console.log('Extracted post ID from slug:', postId);
+          }
+        }
+        
+        let response;
+        if (postId) {
+          // If we have an ID, try to fetch by ID first
+          console.log(`Fetching post by ID: ${postId}`);
+          response = await fetch(`${WORDPRESS_API_URL}/posts/${postId}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            cache: 'no-store',
+          });
+        } else {
+          // Otherwise, fetch by slug
+          console.log(`Fetching post by slug: ${slug}`);
+          response = await fetch(`${WORDPRESS_API_URL}/posts?slug=${slug}`, {
+            method: 'GET',
+            headers: {
+              'Accept': 'application/json',
+            },
+            cache: 'no-store',
+          });
+        }
         
         if (!response.ok) {
           throw new Error(`HTTP error! status: ${response.status}`);
         }
         
         const data = await response.json();
+        console.log('API response:', data);
         
-        // WordPress API returns an array of posts, we need the first one
-        if (data.posts && data.posts.length > 0) {
-          const postData = data.posts[0];
-          setPost(postData);
-          
-          // Extract YouTube links from content
-          if (postData.content) {
-            const youtubeLinks = extractYoutubeLinks(postData.content);
-            setYoutubeVideos(youtubeLinks);
-          }
-          
-          // Fetch comments for this post
-          if (postData.ID) {
-            try {
-              const commentsResponse = await fetch(`${WORDPRESS_API_URL}/posts/${postData.ID}/replies`, {
-                method: 'GET',
-                headers: {
-                  'Accept': 'application/json',
-                },
-                cache: 'no-store',
-              });
-              
-              if (!commentsResponse.ok) {
-                throw new Error(`HTTP error! status: ${commentsResponse.status}`);
-              }
-              
-              const commentsData = await commentsResponse.json();
-              setComments(commentsData.comments || []);
-            } catch (commentError) {
-              console.error('Error fetching comments:', commentError);
-              setComments([]);
-            }
-          }
+        let postData;
+        
+        // Handle different response formats
+        if (postId && data.ID) {
+          // Direct post response
+          postData = data;
+          console.log('Using direct post response');
+        } else if (data.posts && data.posts.length > 0) {
+          // Posts array response
+          postData = data.posts[0];
+          console.log('Using first post from array response');
         } else {
-          // No post found with this slug
-          setPost(null);
+          throw new Error('Post not found');
+        }
+        
+        console.log('Found post:', postData);
+        
+        // Verify this is the correct post by checking the slug
+        if (postData.slug && slug.includes(postData.slug)) {
+          console.log('Post slug matches URL slug');
+        } else {
+          console.warn('Post slug does not match URL slug. This might be the wrong post.');
+        }
+        
+        setPost(postData);
+        
+        // Extract YouTube links from content
+        if (postData.content) {
+          const youtubeLinks = extractYoutubeLinks(postData.content);
+          setYoutubeVideos(youtubeLinks);
+        }
+        
+        // Fetch comments for this post
+        if (postData.ID) {
+          try {
+            const commentsResponse = await fetch(`${WORDPRESS_API_URL}/posts/${postData.ID}/replies`, {
+              method: 'GET',
+              headers: {
+                'Accept': 'application/json',
+              },
+              cache: 'no-store',
+            });
+            
+            if (!commentsResponse.ok) {
+              throw new Error(`HTTP error! status: ${commentsResponse.status}`);
+            }
+            
+            const commentsData = await commentsResponse.json();
+            setComments(commentsData.comments || []);
+          } catch (commentError) {
+            console.error('Error fetching comments:', commentError);
+            setComments([]);
+          }
         }
       } catch (error) {
         console.error('Error fetching post:', error);
@@ -125,7 +183,7 @@ export default function BlogPostPage() {
     if (slug) {
       fetchPost();
     }
-  }, [slug, WORDPRESS_API_URL]);
+  }, [slug]);
 
   // Extract YouTube links from content
   const extractYoutubeLinks = (content: string): string[] => {
@@ -281,11 +339,7 @@ export default function BlogPostPage() {
   }, [post]);
 
   if (isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
-      </div>
-    );
+    return <LoadingState />;
   }
 
   if (!post) {
@@ -608,5 +662,14 @@ export default function BlogPostPage() {
         </div>
       </section>
     </main>
+  );
+}
+
+// Main page component with Suspense boundary
+export default function BlogPostPage() {
+  return (
+    <Suspense fallback={<LoadingState />}>
+      <BlogPostContent />
+    </Suspense>
   );
 } 
