@@ -8,7 +8,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar, ArrowLeft, User, MessageSquare, Send, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import Image from "next/image";
 import Link from "next/link";
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { Textarea } from "@/components/ui/textarea";
 import { Input } from "@/components/ui/input";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -64,11 +64,27 @@ function BlogPostContent() {
     message: string;
   } | null>(null);
   const [isBookmarked, setIsBookmarked] = useState(false);
+  const [canGoBack, setCanGoBack] = useState(false);
   const params = useParams();
+  const router = useRouter();
   const slug = params.slug as string;
 
   const SITE_ID = 'blog.shinpi.me';
   const WORDPRESS_API_URL = `https://public-api.wordpress.com/rest/v1.1/sites/${SITE_ID}`;
+
+  // Check if we can go back in history
+  useEffect(() => {
+    setCanGoBack(window.history.length > 1);
+  }, []);
+
+  // Handle back navigation
+  const handleBack = () => {
+    if (canGoBack) {
+      router.back();
+    } else {
+      router.push('/blog');
+    }
+  };
 
   useEffect(() => {
     const fetchPost = async () => {
@@ -372,10 +388,14 @@ function BlogPostContent() {
       <section className="relative py-16 md:py-20">
         <div className="container mx-auto px-4">
           <div className="max-w-4xl mx-auto">
-            <Link href="/blog" className="inline-flex items-center text-muted-foreground hover:text-primary mb-8 transition-colors">
+            <Button 
+              variant="ghost" 
+              onClick={handleBack}
+              className="inline-flex items-center text-muted-foreground hover:text-primary mb-8 transition-colors"
+            >
               <ArrowLeft className="w-4 h-4 mr-2" />
-              ブログ一覧に戻る
-            </Link>
+              {canGoBack ? '前のページに戻る' : 'ブログ一覧に戻る'}
+            </Button>
             
             <div className="space-y-8">
               <h1 className="text-3xl md:text-5xl font-bold text-primary leading-tight">
@@ -510,12 +530,14 @@ function BlogPostContent() {
                   </Button>
                 </div>
                 <div className="flex justify-center">
-                  <Link href="/blog">
-                    <Button variant="outline" className="w-full sm:w-auto">
-                      <ArrowLeft className="w-4 h-4 mr-2" />
-                      ブログ一覧に戻る
-                    </Button>
-                  </Link>
+                  <Button 
+                    variant="outline" 
+                    className="w-full sm:w-auto"
+                    onClick={handleBack}
+                  >
+                    <ArrowLeft className="w-4 h-4 mr-2" />
+                    {canGoBack ? '前のページに戻る' : 'ブログ一覧に戻る'}
+                  </Button>
                 </div>
               </div>
             </div>
