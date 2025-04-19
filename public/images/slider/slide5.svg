@@ -1,0 +1,60 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <rect width="1200" height="600" fill="url(#paint0_linear)" />
+  
+  <!-- Sun -->
+  <circle cx="1000" cy="150" r="80" fill="url(#paint1_radial)" />
+  
+  <!-- Ocean -->
+  <path d="M0,400 Q300,350 600,400 Q900,450 1200,400 L1200,600 L0,600 Z" fill="url(#paint2_linear)" />
+  
+  <!-- Waves -->
+  <path d="M0,450 Q150,430 300,450 Q450,470 600,450 Q750,430 900,450 Q1050,470 1200,450" stroke="white" stroke-width="2" opacity="0.3" />
+  <path d="M0,470 Q150,450 300,470 Q450,490 600,470 Q750,450 900,470 Q1050,490 1200,470" stroke="white" stroke-width="2" opacity="0.2" />
+  
+  <!-- Palm Trees -->
+  <g transform="translate(200, 400)">
+    <!-- Trunk -->
+    <path d="M0,0 C20,-100 40,-200 0,-200" stroke="#8B4513" stroke-width="10" fill="none" />
+    <!-- Leaves -->
+    <path d="M0,-200 Q-50,-250 -100,-200 Q-50,-150 0,-200" fill="#228B22" />
+    <path d="M0,-200 Q50,-250 100,-200 Q50,-150 0,-200" fill="#228B22" />
+    <path d="M0,-200 Q0,-250 0,-300 Q0,-250 0,-200" fill="#228B22" />
+  </g>
+  
+  <g transform="translate(1000, 380)">
+    <!-- Trunk -->
+    <path d="M0,0 C20,-100 40,-200 0,-200" stroke="#8B4513" stroke-width="10" fill="none" />
+    <!-- Leaves -->
+    <path d="M0,-200 Q-50,-250 -100,-200 Q-50,-150 0,-200" fill="#228B22" />
+    <path d="M0,-200 Q50,-250 100,-200 Q50,-150 0,-200" fill="#228B22" />
+    <path d="M0,-200 Q0,-250 0,-300 Q0,-250 0,-200" fill="#228B22" />
+  </g>
+  
+  <!-- Birds -->
+  <g transform="translate(300, 200)">
+    <path d="M0,0 Q10,-10 20,0 Q30,10 20,0 Q10,-10 0,0" fill="white" opacity="0.8" />
+    <path d="M40,0 Q50,-10 60,0 Q70,10 60,0 Q50,-10 40,0" fill="white" opacity="0.8" />
+  </g>
+  
+  <g transform="translate(800, 180)">
+    <path d="M0,0 Q10,-10 20,0 Q30,10 20,0 Q10,-10 0,0" fill="white" opacity="0.8" />
+    <path d="M40,0 Q50,-10 60,0 Q70,10 60,0 Q50,-10 40,0" fill="white" opacity="0.8" />
+  </g>
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="0" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#FF7F50" />
+      <stop offset="1" stop-color="#FF4500" />
+    </linearGradient>
+    <radialGradient id="paint1_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(1000 150) rotate(90) scale(80)">
+      <stop stop-color="#FFD700" />
+      <stop offset="1" stop-color="#FF4500" stop-opacity="0" />
+    </radialGradient>
+    <linearGradient id="paint2_linear" x1="0" y1="400" x2="0" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#1E90FF" />
+      <stop offset="1" stop-color="#000080" />
+    </linearGradient>
+  </defs>
+</svg> 

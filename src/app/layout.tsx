@@ -20,8 +20,8 @@ export default function RootLayout({
 }) {
     return (
             <ThemeProvider>
-                <html lang="en"  className={inter.className}>
-                <body className="min-h-screen bg-gray-900 text-gray-100 font-sans antialiased">
+                <html lang="ja" className={inter.className}>
+                <body className="min-h-screen bg-background text-foreground font-sans antialiased">
                 <Header/>
                 {children}
                 <Footer/>

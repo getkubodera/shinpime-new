@@ -1,0 +1,51 @@
+<svg width="1200" height="600" viewBox="0 0 1200 600" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Background with gradient -->
+  <rect width="1200" height="600" fill="url(#paint0_linear)" />
+  
+  <!-- Mandala pattern -->
+  <g transform="translate(600, 300)">
+    <!-- Outer ring -->
+    <circle r="180" fill="none" stroke="url(#paint1_linear)" stroke-width="2" opacity="0.7" />
+    <circle r="160" fill="none" stroke="url(#paint2_linear)" stroke-width="2" opacity="0.6" />
+    <circle r="140" fill="none" stroke="url(#paint3_linear)" stroke-width="2" opacity="0.5" />
+    
+    <!-- Inner patterns -->
+    <path d="M0,-120 L20.78,-103.92 L0,-87.85 L-20.78,-103.92 Z" fill="white" opacity="0.8" />
+    <path d="M103.92,-20.78 L120,0 L103.92,20.78 L87.85,0 Z" fill="white" opacity="0.8" />
+    <path d="M20.78,103.92 L0,120 L-20.78,103.92 L0,87.85 Z" fill="white" opacity="0.8" />
+    <path d="M-103.92,20.78 L-120,0 L-103.92,-20.78 L-87.85,0 Z" fill="white" opacity="0.8" />
+    
+    <!-- Center circle -->
+    <circle r="40" fill="url(#paint4_radial)" />
+  </g>
+  
+  <!-- Floating elements -->
+  <circle cx="300" cy="150" r="15" fill="white" opacity="0.6" />
+  <circle cx="900" cy="450" r="20" fill="white" opacity="0.6" />
+  <circle cx="250" cy="400" r="10" fill="white" opacity="0.6" />
+  <circle cx="950" cy="200" r="12" fill="white" opacity="0.6" />
+  
+  <!-- Gradients -->
+  <defs>
+    <linearGradient id="paint0_linear" x1="0" y1="0" x2="1200" y2="600" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#0f172a" />
+      <stop offset="1" stop-color="#1e293b" />
+    </linearGradient>
+    <linearGradient id="paint1_linear" x1="-180" y1="0" x2="180" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#818cf8" />
+      <stop offset="1" stop-color="#c084fc" />
+    </linearGradient>
+    <linearGradient id="paint2_linear" x1="-160" y1="0" x2="160" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#c084fc" />
+      <stop offset="1" stop-color="#f472b6" />
+    </linearGradient>
+    <linearGradient id="paint3_linear" x1="-140" y1="0" x2="140" y2="0" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#f472b6" />
+      <stop offset="1" stop-color="#fb7185" />
+    </linearGradient>
+    <radialGradient id="paint4_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(0 0) rotate(90) scale(40)">
+      <stop stop-color="#f8fafc" />
+      <stop offset="1" stop-color="#cbd5e1" />
+    </radialGradient>
+  </defs>
+</svg> 

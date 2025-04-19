@@ -1,9 +1,11 @@
 // app/pages/books.tsx
 'use client'
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
 import Image from "next/image";
 import Link from "next/link";
 import { useState } from "react";
+import { BookOpen, ExternalLink, ChevronDown, ChevronUp } from "lucide-react";
 
 // Data for the books
 const booksData = [
@@ -21,7 +23,7 @@ const booksData = [
             "―ぜひ本書を、男性女性を問わず、リーダーシップに悩む人、人生がうまくいっていない人に読んでいただきたい。\n" +
             "きっと主人公に自分を重ね合わせて、リーダーシップへのストレスが軽くなり、そして自分の人生をあらためて見つめるきっかけともなるだろう。\n" +
             "\n" +
-            "なぜならば、「ぼっけもんリーダー術」を学ぶことはリーダーシップの原点に返ることであり、“自分の心”を学ぶことだからである。\n" +
+            "なぜならば、「ぼっけもんリーダー術」を学ぶことはリーダーシップの原点に返ることであり、\"自分の心\"を学ぶことだからである。\n" +
             "さらに『老子』というレンズを合わせることで、それがより深く明瞭に見えるようになる。\n" +
             "\n" +
             "本書には、生粋のぼっけもんである西郷隆盛やその弟の西郷従道の他に、勝海舟や元京大総長で科学者の平澤興、自然農法の福岡正信などが登場する。\n" +
@@ -32,7 +34,7 @@ const booksData = [
     },
     {
         title: "頭山満のサラリーマン問題解決法。閉塞感でモヤモヤ苦しいあなたの人生が輝き出すヒント。",
-        description: "生きていると必ず生じるさまざまな“問題”。誰もが日々、悩みを抱え仕事をしている。本書はそんな悩める、ビジネスパーソンを中心とした２０代～４０代くらいの男女のためにある。他人から些細なことだと思われる問題でも、自分の中ではどんどん膨らんでいく。そして、仕事が手につかず、何も考えられなくなり絶望する。そんなこともあるだろう。本書を読むことで、堂々巡りしていたところから、少なくとも自分の問題の解決、悩みの解消に向かって一歩を踏み出せる。なぜならば、“頭山満”という歴史上類のない型破りな人物を現代によみがえらせ、現代人のさまざまな問題に当たらせている。そのため読者は「頭山満という鏡」を通して自分を見ることで、今までとは違った視点から目前の問題と人生をみることができるからだ。その上で、本書が指し示す具体的な行動を起こせば、主体的に変化を起こせる。こうしてあなたは、直面する問題を突破して、誰に何を言われようと独自の生き方をした頭山満のように、自分らしい人生を堂々と生き始めるだろう。",
+        description: "生きていると必ず生じるさまざまな\"問題\"。誰もが日々、悩みを抱え仕事をしている。本書はそんな悩める、ビジネスパーソンを中心とした２０代～４０代くらいの男女のためにある。他人から些細なことだと思われる問題でも、自分の中ではどんどん膨らんでいく。そして、仕事が手につかず、何も考えられなくなり絶望する。そんなこともあるだろう。本書を読むことで、堂々巡りしていたところから、少なくとも自分の問題の解決、悩みの解消に向かって一歩を踏み出せる。なぜならば、\"頭山満\"という歴史上類のない型破りな人物を現代によみがえらせ、現代人のさまざまな問題に当たらせている。そのため読者は「頭山満という鏡」を通して自分を見ることで、今までとは違った視点から目前の問題と人生をみることができるからだ。その上で、本書が指し示す具体的な行動を起こせば、主体的に変化を起こせる。こうしてあなたは、直面する問題を突破して、誰に何を言われようと独自の生き方をした頭山満のように、自分らしい人生を堂々と生き始めるだろう。",
         image: "https://m.media-amazon.com/images/I/51AROYDqiHL.jpg",
         link: "https://www.amazon.co.jp/-/en/%E5%86%A8%E5%B6%BD%E7%99%BE%E5%A4%AA%E9%83%8E/dp/B07FDN2P9B/"
     },
@@ -54,7 +56,6 @@ const booksData = [
         image: "https://m.media-amazon.com/images/I/81QD42WjRLL._SL1500_.jpg",
         link: "https://www.amazon.co.jp/-/en/%E5%86%A8%E5%B6%BD%E7%99%BE%E5%A4%AA%E9%83%8E/dp/B07F9G56JL/"
     },
-    // Add more books here
 ];
 
 export default function BooksPage() {
@@ -65,59 +66,109 @@ export default function BooksPage() {
     };
 
     return (
-        <main className="container mx-auto px-4 py-8 space-y-12">
-            <section className="text-center space-y-4">
-                <h1 className="text-4xl font-bold text-gray-800">shinpi me ブックス</h1>
-                <p className="text-lg text-gray-600">
-                    これらの書籍があなたに日本の文化や思想、世界観に関する新たな視点を与え、自らの神秘に気づき、内なる自由を得るための一助になります。
-                </p>
+        <main className="min-h-screen bg-background">
+            {/* Hero Section */}
+            <section className="relative py-20 overflow-hidden">
+                <div className="absolute inset-0 bg-gradient-to-b from-primary/5 to-transparent z-0"></div>
+                <div className="container mx-auto px-4 relative z-10">
+                    <div className="text-center max-w-3xl mx-auto space-y-6">
+                        <div className="inline-flex items-center justify-center p-2 bg-primary/10 rounded-full mb-4">
+                            <BookOpen className="w-8 h-8 text-primary" />
+                        </div>
+                        <h1 className="text-4xl md:text-5xl font-bold text-primary leading-tight">
+                            shinpi me ブックス
+                        </h1>
+                        <p className="text-lg text-muted-foreground">
+                            これらの書籍があなたに日本の文化や思想、世界観に関する新たな視点を与え、自らの神秘に気づき、内なる自由を得るための一助になります。
+                        </p>
+                    </div>
+                </div>
+            </section>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
-                    {booksData.map((book, index) => (
-                        <Card key={index} className="shadow-md flex flex-col">
-                            <CardHeader>
-                                <Image
-                                    src={book.image}
-                                    alt={book.title}
-                                    width={300}
-                                    height={400}
-                                    className="rounded-md object-cover w-full"
-                                />
-                                <CardTitle className="text-xl font-semibold mt-4">
-                                    {book.title}
-                                </CardTitle>
-                            </CardHeader>
-                            <CardContent className="flex flex-col flex-grow">
-                                <div className="flex-grow">
-                                    <p className="text-gray-600">
-                                        {expandedIndex === index
-                                            ? book.description
-                                            : `${book.description.slice(0, 100)}... `}
-                                    </p>
+            {/* Books Grid Section */}
+            <section className="py-16">
+                <div className="container mx-auto px-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                        {booksData.map((book, index) => (
+                            <Card key={index} className="astro-card card-hover overflow-hidden flex flex-col h-full">
+                                <div className="relative h-64 overflow-hidden">
+                                    <Image
+                                        src={book.image}
+                                        alt={book.title}
+                                        fill
+                                        className="object-cover transition-transform duration-500 hover:scale-105"
+                                    />
+                                    <div className="absolute inset-0 bg-gradient-to-t from-background/80 to-transparent"></div>
                                 </div>
-                                {book.description.length > 100 && (
-                                    <div className="mt-4 text-center">
-                                        <button
-                                            onClick={() => toggleExpand(index)}
-                                            className="text-blue-500 hover:underline"
-                                        >
-                                            {expandedIndex === index ? "閉じる" : "もっと読む"}
-                                        </button>
+                                <CardHeader>
+                                    <CardTitle className="text-xl font-bold text-primary line-clamp-2">
+                                        {book.title}
+                                    </CardTitle>
+                                </CardHeader>
+                                <CardContent className="flex flex-col flex-grow">
+                                    <div className="flex-grow">
+                                        <p className="text-foreground line-clamp-4">
+                                            {expandedIndex === index
+                                                ? book.description
+                                                : `${book.description.slice(0, 150)}...`}
+                                        </p>
                                     </div>
-                                )}
-                                <div className="mt-4 text-center">
-                                    <Link
-                                        href={book.link}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="inline-block px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600"
-                                    >
-                                        Amazonで購入
-                                    </Link>
-                                </div>
-                            </CardContent>
-                        </Card>
-                    ))}
+                                    {book.description.length > 150 && (
+                                        <div className="mt-4 flex justify-center">
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                onClick={() => toggleExpand(index)}
+                                                className="text-primary hover:text-primary/80"
+                                            >
+                                                {expandedIndex === index ? (
+                                                    <span className="flex items-center gap-1">
+                                                        <ChevronUp className="w-4 h-4" />
+                                                        閉じる
+                                                    </span>
+                                                ) : (
+                                                    <span className="flex items-center gap-1">
+                                                        <ChevronDown className="w-4 h-4" />
+                                                        もっと読む
+                                                    </span>
+                                                )}
+                                            </Button>
+                                        </div>
+                                    )}
+                                    <div className="mt-6">
+                                        <a
+                                            href={book.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="button-hover astro-button w-full flex items-center justify-center gap-2"
+                                        >
+                                            <ExternalLink className="w-4 h-4" />
+                                            Amazonで購入
+                                        </a>
+                                    </div>
+                                </CardContent>
+                            </Card>
+                        ))}
+                    </div>
+                </div>
+            </section>
+
+            {/* Featured Section */}
+            <section className="py-16 bg-secondary/5">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-3xl mx-auto text-center space-y-6">
+                        <h2 className="text-3xl font-bold text-primary">東洋思想の探求</h2>
+                        <p className="text-lg text-muted-foreground">
+                            これらの書籍を通じて、日本文化の伝統的な世界観を再発見し、人間の内なる力を引き出すことで、より良い社会の創造に貢献することを目指しています。
+                        </p>
+                        <div className="pt-6">
+                            <Link href="/about">
+                                <Button className="button-hover astro-button">
+                                    著者について
+                                </Button>
+                            </Link>
+                        </div>
+                    </div>
                 </div>
             </section>
         </main>
