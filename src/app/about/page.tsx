@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, Phone, MapPin, Calendar, Briefcase, BookOpen, Heart, Brain, Sparkles } from "lucide-react";
+import { Mail, BookOpen, Heart, Target, Lightbulb } from "lucide-react";
 import Link from "next/link";
 
 export default function AboutPage() {
