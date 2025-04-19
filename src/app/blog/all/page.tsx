@@ -77,6 +77,11 @@ function AllBlogPostsContent() {
       
       const data = await response.json();
       
+      // Get the total number of posts from the API response
+      const totalFound = data.found || 0;
+      setTotalPosts(totalFound);
+      setTotalPages(Math.ceil(totalFound / POSTS_PER_PAGE));
+      
       // Filter out deleted or unpublished posts
       const validPosts = data.posts.filter((post: WordPressPost) => 
         post.status === 'publish' && !post.deleted
@@ -111,8 +116,6 @@ function AllBlogPostsContent() {
       });
       
       setPosts(postsWithValidSlugs);
-      setTotalPosts(validPosts.length);
-      setTotalPages(Math.ceil(validPosts.length / POSTS_PER_PAGE));
     } catch (error) {
       console.error('Error fetching posts:', error);
       // Set empty posts array to avoid rendering errors

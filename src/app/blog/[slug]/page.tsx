@@ -43,8 +43,63 @@ interface WordPressUser {
 // Loading component
 function LoadingState() {
   return (
-    <div className="min-h-screen flex items-center justify-center">
-      <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-primary"></div>
+    <div className="min-h-screen bg-background">
+      {/* Main content */}
+      <section className="py-12 md:py-16">
+        {/* Hero Section */}
+        <section className="relative py-16 md:py-20">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="h-10 w-40 bg-muted animate-pulse rounded mb-8"></div>
+              
+              <div className="space-y-8">
+                <div className="h-12 md:h-16 w-full bg-muted animate-pulse rounded"></div>
+                
+                <div className="flex flex-wrap items-center gap-4">
+                  <div className="h-6 w-32 bg-muted animate-pulse rounded"></div>
+                  <div className="flex items-center gap-2">
+                    <div className="h-8 w-8 rounded-full bg-muted animate-pulse"></div>
+                    <div className="h-6 w-24 bg-muted animate-pulse rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        {/* Featured Image Section */}
+        <section className="py-4">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="relative w-full h-[300px] md:h-[400px] rounded-xl overflow-hidden bg-muted animate-pulse"></div>
+            </div>
+          </div>
+        </section>
+
+        {/* Content Section */}
+        <section className="py-12">
+          <div className="container mx-auto px-4">
+            <div className="max-w-4xl mx-auto">
+              <div className="bg-card rounded-xl shadow-md border border-border/50 overflow-hidden">
+                <div className="p-6 md:p-10">
+                  <div className="space-y-4">
+                    <div className="h-4 w-full bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-5/6 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-4/6 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-full bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-3/4 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-5/6 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-full bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-4/6 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-3/4 bg-muted animate-pulse rounded"></div>
+                    <div className="h-4 w-5/6 bg-muted animate-pulse rounded"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+      </section>
     </div>
   );
 }
