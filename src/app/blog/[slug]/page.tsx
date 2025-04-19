@@ -659,6 +659,31 @@ function BlogPostContent() {
                         </Button>
                       </div>
                     )}
+                    
+                    {/* Always show the comment posting button, regardless of whether there are comments */}
+                    {comments.length > 0 && (
+                      <div className="text-center py-4 border-t border-border/50 mt-6">
+                        <p className="text-sm text-muted-foreground mb-4">コメントを投稿するには、WordPress.comにログインしてください。</p>
+                        <Button 
+                          variant="outline" 
+                          onClick={() => {
+                            if (post && post.ID) {
+                              // Extract post ID from the slug if it starts with a number
+                              const postIdMatch = slug.match(/^(\d+)/);
+                              const postId = postIdMatch ? postIdMatch[1] : post.ID;
+                              
+                              // Use the correct WordPress.com URL format
+                              window.open(`https://wordpress.com/reader/blogs/238198988/posts/${postId}`, '_blank');
+                            } else {
+                              // Fallback to the general feed if post ID is not available
+                              window.open(`https://wordpress.com/read/feeds/${SITE_ID.replace(/[^0-9]/g, '')}`, '_blank');
+                            }
+                          }}
+                        >
+                          WordPress.comでコメントを投稿
+                        </Button>
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
