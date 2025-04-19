@@ -1,7 +1,7 @@
 import Image from "next/image";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Mail, BookOpen, Heart, Target, Lightbulb } from "lucide-react";
+import { Mail, BookOpen, Heart, Target, Lightbulb, Calendar } from "lucide-react";
 import Link from "next/link";
 
 export default function AboutPage() {
@@ -39,6 +39,35 @@ export default function AboutPage() {
         image: "https://blog.shinpi.me/wp-content/uploads/2024/10/kubo-1.jpg", // Replace with your actual image URL
         email: "contact@shinpi.me", // Your email address
     };
+
+    // Timeline data
+    const timelineData = [
+        {
+            year: "1964",
+            title: "誕生",
+            description: "東京都清瀬市に生まれる"
+        },
+        {
+            year: "1987",
+            title: "大学卒業",
+            description: "玉川大学工学部経営工学科卒業"
+        },
+        {
+            year: "1989",
+            title: "放送作家として活動開始",
+            description: "ドキュメンタリー、情報番組、アニメーション、バラエティーなどさまざまなテレビやラジオ番組等の企画、構成、脚本を手掛ける"
+        },
+        {
+            year: "2003",
+            title: "健康関連の出版物の編集・ライティング",
+            description: "病をきっかけに健康関連の出版物の編集・ライティングに携わる"
+        },
+        {
+            year: "現在",
+            title: "東洋思想を軸とした活動",
+            description: "ブログや書籍の執筆、イベントや講演の企画を行い、多くの人々に深い気づきと知恵を届ける。東洋思想やスピリチュアルに関する知識を広め、日本文化の根底にある空（くう）や無の世界観を現代に表現する"
+        }
+    ];
 
     return (
         <main className="min-h-screen bg-background">
@@ -98,7 +127,7 @@ export default function AboutPage() {
                                 </CardDescription>
                             </CardHeader>
                             <CardContent className="space-y-4">
-                                <p className="text-foreground whitespace-pre-line">
+                                <p className="text-muted-foreground whitespace-pre-line">
                                     {aboutData.bio}
                                 </p>
                             </CardContent>
@@ -107,92 +136,121 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            {/* Mission Section */}
+            {/* Timeline Section */}
             <section className="py-16">
                 <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-primary">shinpi me のミッション</h2>
-                        <p className="text-lg text-muted-foreground max-w-2xl mx-auto mt-4">
-                            {aboutData.mission.short}
-                        </p>
+                    <div className="max-w-4xl mx-auto">
+                        <h2 className="text-3xl font-bold text-primary mb-12 text-center">経歴</h2>
+                        <div className="relative">
+                            {/* Timeline line */}
+                            <div className="absolute left-1/2 transform -translate-x-1/2 h-full w-1 bg-primary/20"></div>
+                            
+                            {/* Timeline items */}
+                            <div className="space-y-12">
+                                {timelineData.map((item, index) => (
+                                    <div key={index} className={`flex items-center ${index % 2 === 0 ? 'flex-row' : 'flex-row-reverse'}`}>
+                                        {/* Content */}
+                                        <div className={`w-1/2 ${index % 2 === 0 ? 'pr-8 text-right' : 'pl-8'}`}>
+                                            <div className="bg-card p-6 rounded-lg shadow-md border border-border/50 hover:shadow-lg transition-shadow duration-300">
+                                                <h3 className="text-xl font-bold text-primary mb-2">{item.title}</h3>
+                                                <p className="text-muted-foreground">{item.description}</p>
+                                            </div>
+                                        </div>
+                                        
+                                        {/* Timeline dot */}
+                                        <div className="relative z-10 flex items-center justify-center w-12 h-12 rounded-full bg-primary text-white shadow-lg">
+                                            <Calendar className="w-6 h-6" />
+                                        </div>
+                                        
+                                        {/* Year */}
+                                        <div className={`w-1/2 ${index % 2 === 0 ? 'pl-8' : 'pr-8 text-right'}`}>
+                                            <div className="text-2xl font-bold text-primary">{item.year}</div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
                     </div>
+                </div>
+            </section>
+
+            {/* Mission Section */}
+            <section className="py-16 bg-secondary/5">
+                <div className="container mx-auto px-4">
                     <div className="max-w-3xl mx-auto">
                         <Card className="astro-card card-hover">
-                            <CardContent className="p-6">
-                                <p className="text-foreground whitespace-pre-line">
-                                    {aboutData.mission.detailed}
-                                </p>
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold text-primary">ミッション</CardTitle>
+                                <CardDescription className="text-lg">
+                                    東洋思想を通じた内なる自由の追求
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-6">
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-semibold text-primary">短期的な目標</h3>
+                                    <p className="text-muted-foreground">{aboutData.mission.short}</p>
+                                </div>
+                                <div className="space-y-2">
+                                    <h3 className="text-xl font-semibold text-primary">長期的なビジョン</h3>
+                                    <p className="text-muted-foreground whitespace-pre-line">{aboutData.mission.detailed}</p>
+                                </div>
                             </CardContent>
                         </Card>
                     </div>
                 </div>
             </section>
 
-            {/* Values Section */}
+            {/* Career Section */}
+            <section className="py-16">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-3xl mx-auto">
+                        <Card className="astro-card card-hover">
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold text-primary">キャリア</CardTitle>
+                                <CardDescription className="text-lg">
+                                    多様な分野での経験と専門性
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground whitespace-pre-line">{aboutData.career}</p>
+                            </CardContent>
+                        </Card>
+                    </div>
+                </div>
+            </section>
+
+            {/* Personal Mission Section */}
             <section className="py-16 bg-secondary/5">
                 <div className="container mx-auto px-4">
-                    <div className="text-center mb-12">
-                        <h2 className="text-3xl font-bold text-primary">価値観と活動</h2>
+                    <div className="max-w-3xl mx-auto">
+                        <Card className="astro-card card-hover">
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold text-primary">パーソナルミッション</CardTitle>
+                                <CardDescription className="text-lg">
+                                    自己の成長と社会への貢献
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent>
+                                <p className="text-muted-foreground whitespace-pre-line">{aboutData.personalMission}</p>
+                            </CardContent>
+                        </Card>
                     </div>
-                    <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+                </div>
+            </section>
+
+            {/* Mission Activities Section */}
+            <section className="py-16">
+                <div className="container mx-auto px-4">
+                    <div className="max-w-3xl mx-auto">
                         <Card className="astro-card card-hover">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="p-2 bg-primary/10 rounded-full">
-                                    <Heart className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-xl font-bold text-primary">個人的なミッション</CardTitle>
-                                </div>
+                            <CardHeader>
+                                <CardTitle className="text-2xl font-bold text-primary">活動内容</CardTitle>
+                                <CardDescription className="text-lg">
+                                    ミッションを実現するための具体的な取り組み
+                                </CardDescription>
                             </CardHeader>
                             <CardContent>
-                                <p className="text-foreground whitespace-pre-line">
-                                    {aboutData.personalMission}
-                                </p>
-                            </CardContent>
-                        </Card>
-                        <Card className="astro-card card-hover">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="p-2 bg-primary/10 rounded-full">
-                                    <Target className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-xl font-bold text-primary">ミッションの具体的な取り組み</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-foreground whitespace-pre-line">
-                                    {aboutData.missionActivities}
-                                </p>
-                            </CardContent>
-                        </Card>
-                        <Card className="astro-card card-hover">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="p-2 bg-primary/10 rounded-full">
-                                    <BookOpen className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-xl font-bold text-primary">経歴</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-foreground whitespace-pre-line">
-                                    {aboutData.career}
-                                </p>
-                            </CardContent>
-                        </Card>
-                        <Card className="astro-card card-hover">
-                            <CardHeader className="flex flex-row items-center gap-4">
-                                <div className="p-2 bg-primary/10 rounded-full">
-                                    <Lightbulb className="w-6 h-6 text-primary" />
-                                </div>
-                                <div>
-                                    <CardTitle className="text-xl font-bold text-primary">哲学</CardTitle>
-                                </div>
-                            </CardHeader>
-                            <CardContent>
-                                <p className="text-foreground">
-                                    東洋思想の「空」「無」の概念を通じて、内なる自由と平和を見出すことを目指しています。日本文化の伝統的な世界観を現代に活かし、より良い社会の創造に貢献します。
-                                </p>
+                                <p className="text-muted-foreground whitespace-pre-line">{aboutData.missionActivities}</p>
                             </CardContent>
                         </Card>
                     </div>
@@ -200,28 +258,17 @@ export default function AboutPage() {
             </section>
 
             {/* Contact Section */}
-            <section className="py-16">
+            <section className="py-16 bg-secondary/5">
                 <div className="container mx-auto px-4">
-                    <div className="max-w-3xl mx-auto">
-                        <Card className="astro-card card-hover">
-                            <CardHeader className="text-center">
-                                <CardTitle className="text-2xl font-bold text-primary">お問い合わせ</CardTitle>
-                                <CardDescription className="text-lg">
-                                    ご質問や連絡は、下記のメールアドレスまでお願いいたします。
-                                </CardDescription>
-                            </CardHeader>
-                            <CardContent className="text-center">
-                                <div className="flex items-center justify-center gap-2 text-lg">
-                                    <Mail className="w-5 h-5 text-primary" />
-                                    <a 
-                                        href={`mailto:${aboutData.email}`} 
-                                        className="text-primary hover:underline"
-                                    >
-                                        {aboutData.email}
-                                    </a>
-                                </div>
-                            </CardContent>
-                        </Card>
+                    <div className="max-w-3xl mx-auto text-center">
+                        <h2 className="text-3xl font-bold text-primary mb-6">お問い合わせ</h2>
+                        <p className="text-lg text-muted-foreground mb-8">
+                            カウンセリングのご予約やお問い合わせは、以下のメールアドレスまでお願いします。
+                        </p>
+                        <a href={`mailto:${aboutData.email}`} className="inline-flex items-center gap-2 text-primary hover:text-primary/80 transition-colors">
+                            <Mail className="w-5 h-5" />
+                            <span className="text-lg font-medium">{aboutData.email}</span>
+                        </a>
                     </div>
                 </div>
             </section>
