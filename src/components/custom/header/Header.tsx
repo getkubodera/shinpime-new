@@ -13,6 +13,7 @@ const headerData: HeaderData[] = [
     { name: "ブログ", href: "/blog" },
     { name: "概要", href: "/about" },
     { name: "書籍", href: "/books" },
+    { name: "Japanese Lessons", href: "https://jplesson.shinpi.me" },
     //{ name: "製品", href: "/products" },
 ];
 
